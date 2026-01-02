@@ -3,6 +3,7 @@ title: "Example Report Template for a Data Analysis Project"
 author: ""
 format:
   html:
+    embed-resources: true 
     toc: false
     number-sections: true
     highlight-style: github
