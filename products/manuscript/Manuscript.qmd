@@ -1,6 +1,6 @@
 ---
-title: "Example Manuscript Template for a Data Analysis Project"
-author: ""
+title: "Investigation of Measles Case Trends Post-Vaccination Efforts in the United States"
+author: "Austin Hill, Joe Dainis"
 format:
   docx:
     toc: false
@@ -24,16 +24,13 @@ library(knitr)
 
 **Authors**  
 
-* First Author$^{1,2,*}$ (ORCID: 0000-0000-1234-5678) 
-* Second Author$^{3, *}$
-* Third Author$^{3, \dagger}$
-* Last Author$^{1, 2, \land}$ 
+* Joe Dainis$^{1,*}$
+* Austin Hill$^{2, *}$
 
 **Author affiliations**  
 
-1. College of Public Health, University of Georgia, Athens, GA, USA.
+1. Infectious Diseases and Center for Tropical and Emerging Global Diseases, University of Georgia, Athens, GA, USA.
 2. Another Affiliation, Athens, GA, USA.
-3. Yet another Affiliation.
 
 $*$ These authors contributed equally to this work.
 
@@ -45,7 +42,19 @@ author's own and don't reflect their employer.
 
 {{< pagebreak >}}
 
+# Part 1 Project Answers
 
+## Data Description
+The data Austin and I selected is from two different datasets. The first dataset is derived from Project Tycho, a global health database compiling a wealth of data resources for common global health burdens in over 90 different countries. Due to the political discourse surrounding the current measles vaccine, and Austin and I being invested as infectious disease researchers, we honed in on the measles dataset. This measles data compiles 436,932 cases collected through the US Nationally Notified Disease Surveillance System. This data was collected weekly, and includes other variables such as place of acquisition, mortality outcome, cumulative nature and age range. This data can further be broken down by the state/U.S. territory in which the case was reported. The second set of data we are looking to use is a compilation of multiple measles record collections from the CDC amidst the current outbreaks being seen in the U.S. This data describes recent case reports for measles outbreaks from 2023-2026 broken down by state, yearly cases of measles in the United States from 1985-2026, and data on MMR vaccination rates amongst kindergarteners broken down by state from 2009-2025.
+
+## The Question
+After discussion, Joe and I came up with the following question: "What factors might explain the current measles outbreaks seen in the U.S." In particular, we are curious to explore whether past trends in persistent measles cases and vaccination coverage explain the trends we see in particular states acting as outbreak hubs in the U.S.. We are interested in seeing if there are any states which show persistent measles incidence over time from the early 1980s to 2000s and whether this might predict certain states as candidate states for outbreaks. We are also interested in investigating trends of MMR vaccination in kindergarteners and test whether this can predict a state prime for a measles outbreak. We are looking for patterns of specific states that are having current measles outbreaks in 2024-26 (South Carolina, Texas, etc.) having past trends in measles persistence or vaccination struggles as an explanation as to why they are having these outbreaks. 
+
+## Suggestions for analysis
+Our vision for analysis would look to assign a mean value for vaccination rate across the sampled data and run a linear regression analysis to see if a lower vaccination rate amongst kindergartener correlates with a high measles incidence rate between 2024-26. Also, after some searching around, we think it would be interesting to try to run an Autoregressive Integrated Moving Average (ARIMA) model, which is used to predict future data from time series data. We think it would be interesting to implement this with the 1980s to 2000s measles case data from Project Tycho to identify any states with low-level persistent measles cases, as these states would likely predict to have a future measles burden whereas other states would predict to have no case burden. We are unsure of how complicated this could be, but could be interesting to try!
+
+## Background Information for the Question
+As you may know, measles is becoming a major problem again in the United States. Measles was once eliminated in the United States in 2000, but it has since made headlines in recent years for major outbreaks amongst children. Much of this is proposed to be due to lower MMR vaccination rates, but we wonder if there might be additional explanation from past trends in measles incidence. There have been studies which look at predictor variables as indicators of states that may have measles outbreaks, including MMR vaccination rate, population of the county, and international air travel data, but very little attention has been directed at historical data and whether trends of past persistent measles incidence could explain states having current outbreaks.
 
 # Summary/Abstract
 _Write a summary of your project._
