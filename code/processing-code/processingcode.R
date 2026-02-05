@@ -17,19 +17,20 @@ library(dplyr) #for data processing/cleaning
 library(tidyr) #for data processing/cleaning
 library(skimr) #for nice visualization of data 
 library(here) #to set paths
+library(readr)
 
 
 ## ---- loaddata --------
 #path to data
 #note the use of the here() package and not absolute paths
-data_location <- here::here("data","raw-data","exampledata.xlsx")
+data_location <- here::here("data","raw-data","measles-cumulative.csv")
 #load data. 
 #note that for functions that come from specific packages (instead of base R)
 # I often specify both package and function like so
 #package::function() that's not required one could just call the function
 #specifying the package makes it clearer where the function "lives",
 #but it adds typing. You can do it either way.
-rawdata <- readxl::read_excel(data_location)
+rawdata <- readr::read_csv(data_location)
 # We might also want to load the codebook to look at it
 codebook <- readxl::read_excel(data_location, sheet ="Codebook")
 
