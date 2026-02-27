@@ -2,12 +2,16 @@
 title: "Investigation of Measles Case Trends Post-Vaccination Efforts in the United States"
 author: "Austin Hill, Joe Dainis"
 format:
+  html:
+    embed-resources: true
   docx:
     toc: false
     number-sections: true
     highlight-style: github
 bibliography: ../../assets/dataanalysis-references.bib
 csl: ../../assets/american-journal-of-epidemiology.csl
+resources:
+  - results/figures/unnamed-chunk-19-1.png
 ---
 
 The structure below is one possible setup for a manuscript stemming from a data analysis project. It loosely follows the structure of a standard scientific manuscript. Adjust as needed. You don't need to have exactly these sections, but the content covering those sections should be addressed.
@@ -24,12 +28,13 @@ library(knitr)
 
 **Authors**  
 
-* Joe Dainis$^{1,*}$
-* Austin Hill$^{2, *}$
+* Joe Dainis$^{1,2*}$
+* Austin Hill$^{1, *}$
 
 **Author affiliations**  
 
-1. Infectious Diseases and Center for Tropical and Emerging Global Diseases, University of Georgia, Athens, GA, USA.
+1. Infectious Diseases, University of Georgia, Athens, GA, USA.
+2. Center for Tropical and Emerging Global Diseases, University of Georgia, Athens, GA, USA.
 
 
 $*$ These authors contributed equally to this work.
@@ -70,10 +75,10 @@ _It is recommended to use a structured abstract with Background/Methods/Results/
 _Provide enough background on your topic that others can understand the why and how of your analysis_ 
 
 ## Description of data and data source
-_Describe what the data is, what it contains, where it is from, etc. Eventually this might be part of a methods section._
+The three datasets used in this study comes from two different sources. The first dataset, which looks at historical measles case rates from as early as the late 1800s, is sourced from Project Tycho, an open-access global health data resource offered and maintained by the University of Pittsburgh. This data repository offers a large set of pre- and self-compiled data spanning a variety of pathogenic diseases. This study self-compiled a measles dataset, sourced from the United States Nationally Notifiable Surveillance System, spanning 352,518 non-cumulative cases recorded from the 50 United States and multiple U.S. territories, including American Samoa, Guam, Northern Marina Islands, U.S. Virgin Islands and the District of Columbia. These cases cover an age range of 0-130 years of age and provides a number of cases reported within a given period start and end date. The second and third datasets were derived from the CDC's website on measles cases and outbreaks: https://www.cdc.gov/measles/data-research/index.html. This resource offered two datasets analyzed in this study. First, a simple data table of detected measles cases in the 50 United States from 2024-2026. The second dataset is a data table compiling MMR vaccination rates in the 50 United States from 2009 through 2025. This data compiles 286,000 kindergarteners who reported receiving an MMR vaccine during the school year. This data is broken down based on the state, estimated vaccination rate, population size and the survey type used to obtain this data.
 
 ## Questions/Hypotheses to be addressed
-_State the research questions you plan to answer with this analysis._
+Through this analysis, we are investigating whether historical measles incidence can be a predictor for emerging measles cases/outbreaks and current trends in vaccination. Taking inspiration from what history can teach us, we are curious if trends in measles incidence from the 1980s through early 2000s can explain why certain states are having major outbreaks of measles and if this is related to vaccine hesitancy in these states. We hypothesize that states with shorter-lived burdens are more hesitant to vaccinate, due to it being normalized in their community as measles being a less severe threat. This normalization of measles as not a concern for their community then subsequently creates hesitancy to vaccinate, and we hypothesize that this trend in less vaccination correlates with states having outbreaks of measles cases in 2024-2026.
 
 To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the BibTeX file specified in the YAML header above and have the right BibTeX key. Then you can include like this:
 
@@ -84,10 +89,8 @@ Examples of reproducible research projects can for instance be found in [@mckay2
 {{< pagebreak >}}
 
 
-# Methods 
-
-_Describe your methods. That should describe the data, the cleaning processes, and the analysis approaches. You might want to provide a shorter description here and all the details in the supplement._
-
+  html:
+    embed-resources: true# Methods 
 
 ## Schematic of workflow
 
@@ -98,19 +101,35 @@ We store those figures in the `assets` folder.
 #| label: fig-schematic
 #| fig-cap: "A figure that is manually generated and shows some overview/schematic. This has nothing to do with the data, it's just a random one from one of our projects I found and placed here."
 #| echo: FALSE
-knitr::include_graphics(here("assets","antigen-recognition.png"))
 ```
 
 
 
 
 ## Data acquisition
-_As applicable, explain where and how you got the data. If you directly import the data from an online source, you can combine this section with the next._
+Data was obtained from Project Tycho and the CDC as previously mentioned. In brief, CDC data was downloaded from their weekly updated repository. Data was downloaded on February 3, 2026[1]. Non-cumulative measles case data from Project Tycho[2] was downloaded with the following parameters: Condition = measles, Source name = US Nationally Notifiable Disease Surveillance System, Interval Type = Week, Cumulative = No.
 
 
 ## Data import and cleaning
 _Write code that reads in the file and cleans it so it's ready for analysis. Since this will be fairly long code for most datasets, it might be a good idea to have it in one or several R scripts. If that is the case, explain here briefly what kind of cleaning/processing you do, and provide more details and well documented code somewhere (e.g. as supplement in a paper). All materials, including files that contain code, should be commented well so everyone can follow along._
 
+Data import/cleaning is mostly done, so for now we will include a brief summation of what we have done:
+- imported data using read_csv (all datasets)
+
+### MMR Vaccination Data By State (CDC)
+- standardize state names
+- create a new column that extracts year from starting period date
+- remove % from numbers in estimated percent vaccinated column
+- Collapse data to one row per state
+
+### CDC Measles 2024-26 Data
+- rename columns (location -> state, year_raw -> cases)
+- remove NA values from state and year columns
+
+### Project Tycho Historical Measles Data
+- Convert weekly totals to yearly totals by state
+- Add column that looks at longest streaks of consecutive years with measles cases
+- Remove US territories with incomplete data
 
 ## Statistical analysis
 _Explain anything related to your statistical analyses._
@@ -125,17 +144,18 @@ _Explain anything related to your statistical analyses._
 
 _Use a combination of text/tables/figures to explore and describe your data. Show the most important descriptive results here. Additional ones should go in the supplement. Even more can be in the R and Quarto files that are part of your project._
 
+![Example figure Austin and Joe have generated](unnamed-chunk-19-1.png)
+
+![Another example figure Austin and Joe have generated](unnamed-chunk-16-2.png)
 
 @tbl-summarytable shows a summary of the data.
 
 Note the loading of the data providing a **relative** path using the `../../` notation. (Two dots means a folder up). You never want to specify an **absolute** path like `C:\ahandel\myproject\results\` because if you share this with someone, it won't work for them since they don't have that path. You can also use the `here` R package to create paths. See examples of that below. I generally recommend the `here` package.
 
 ```{r}
-#| label: tbl-summarytable
-#| tbl-cap: "Data summary table."
+#| figure: recent peak measles cases versus historical peak measles burden
+#| tbl-cap: "Recent peak measles cases versus historical peak measles burden."
 #| echo: FALSE
-resulttable <- readRDS("../../results/tables/summarytable.rds")
-knitr::kable(resulttable)
 ```
 
 
@@ -151,7 +171,6 @@ _To get some further insight into your data, if reasonable you could compute sim
 #| label: fig-result
 #| fig-cap: "Height and weight stratified by gender."
 #| echo: FALSE
-knitr::include_graphics(here("results","figures","height-weight-stratified.png"))
 ```
 
 
@@ -165,8 +184,6 @@ Example @tbl-resulttable2 shows a summary of a linear model fit.
 #| label: tbl-resulttable2
 #| tbl-cap: "Linear model fit table."
 #| echo: FALSE
-resulttable2 <- readRDS(here("results","tables","resulttable2.rds"))
-knitr::kable(resulttable2)
 ```
 
 
@@ -185,10 +202,6 @@ _Discuss what you perceive as strengths and limitations of your analysis._
 _What are the main take-home messages?_
 
 _Include citations in your Qmd file using BibTeX, the list of references will automatically be placed at the end_
-
-This paper [@leek2015] discusses types of analyses. 
-
-These papers [@mckay2020; @mckay2020a] are good examples of papers published using a fully reproducible setup similar to the one shown in this template. 
 
 Note that this cited reference will show up at the end of the document, the reference formatting is determined by the CSL file specified in the YAML header. Many more style files for almost any journal [are available](https://www.zotero.org/styles). You also specify the location of your BibTeX reference file in the YAML. You can call your reference file anything you like.
 
