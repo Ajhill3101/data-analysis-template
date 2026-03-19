@@ -3,7 +3,8 @@
 This folder is for output files that are so large that they cannot be tracked with
 GitHub. That's generally anything above around 20MB. 
 
-Such large files might result from creating posterior samples from Bayesian models.
+SAVING THIS FILE JUST IN CASE IT IS NEEDED IN THE FUTURE (Austin and Joe)
+
 
 This folder is set in `.gitignore` to be ignored when pushing/pulling. (The folder itself and the readme will be synced, but all other files will be ignored.)
 
