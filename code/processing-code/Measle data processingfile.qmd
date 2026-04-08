@@ -757,3 +757,305 @@ features |>
 
   theme_minimal()
 ```
+
+# **Data Analysis** 
+
+## Regression analyses
+
+# The following analysis examine bivariate relationships between recent measles burden (`total_cases_2024_26`) and selected predictors. For each model, we show a scatterplot with a fitted linear trend, a coefficient table from `tidy()`, and model fit statistics from `glance()`. 
+```{r}
+library(tidymodels)
+library(dplyr)
+library(ggplot2)
+library(broom)
+library(knitr)
+library(readr)
+
+# Create analysis dataset with variables used in models
+bivar_analysis_data <- features %>%
+  select(
+    state,
+    total_cases_2024_26,
+    mmr_mean,
+    frac_years_below_95,
+    hsgradratediff,
+    pct_years_any,
+    mean_cases_80_09,
+    longest_run_nonzero
+  ) %>%
+  drop_na()
+# Define linear regression model specification
+lm_spec <- linear_reg() %>%
+  set_engine("lm")
+```
+# Bivariate linear regression models
+```{r}
+# Model 1: Total measles cases vs mean MMR coverage
+# Fit bivariate model with mean MMR coverage as predictor
+
+mmrbivar_fit <- lm_spec %>%
+  fit(total_cases_2024_26 ~ mmr_mean, data = bivar_analysis_data )
+
+# Plot
+ggplot(bivar_analysis_data , aes(x = mmr_mean, y = total_cases_2024_26)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Total Measles Cases vs Mean MMR Coverage",
+    x = "Mean MMR coverage",
+    y = "Total measles cases, 2024-2026"
+  ) +
+  theme_minimal()
+
+# Coefficient table
+tidy(mmrbivar_fit) %>%
+  kable(caption = "Tidy results: total_cases_2024_26 ~ mmr_mean")
+
+# Model fit summary
+glance(mmrbivar_fit) %>%
+  select(r.squared, adj.r.squared, sigma, statistic, p.value, AIC, BIC, nobs) %>%
+  kable(caption = "Model fit summary: total_cases_2024_26 ~ mmr_mean")
+
+```
+```{r}
+# Model 2: Total measles cases vs fraction of years below 95% MMR
+
+# Fit bivariate model with fraction of years below 95% as predictor
+below95bivar_fit <- lm_spec %>%
+  fit(total_cases_2024_26 ~ frac_years_below_95, data = bivar_analysis_data)
+
+# Plot
+plot_totalcases_below95 <- ggplot(bivar_analysis_data , aes(x = frac_years_below_95, y = total_cases_2024_26)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Total Measles Cases vs Fraction of Years Below 95% MMR",
+    x = "Fraction of years below 95%",
+    y = "Total measles cases, 2024-2026"
+  ) +
+  theme_minimal()
+# Coefficient table
+tidy(below95bivar_fit) %>%
+  kable(caption = "Tidy results: total_cases_2024_26 ~ frac_years_below_95")
+
+# Model fit summary
+glance(below95bivar_fit) %>%
+  select(r.squared, adj.r.squared, sigma, statistic, p.value, AIC, BIC, nobs) %>%
+  kable(caption = "Model fit summary: total_cases_2024_26 ~ frac_years_below_95")
+```
+
+```{r}
+# Model 3: Total measles cases vs historical measles persistence
+
+# Fit bivariate model with historical measles persistence as predictor
+historybivar_fit <- lm_spec %>%
+  fit(total_cases_2024_26 ~ pct_years_any, data = bivar_analysis_data )
+
+# Plot
+ggplot(bivar_analysis_data , aes(x = pct_years_any, y = total_cases_2024_26)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Total Measles Cases vs Historical Measles Persistence",
+    x = "Percent of historical years with any measles cases",
+    y = "Total measles cases, 2024-2026"
+  ) +
+  theme_minimal()
+# Coefficient table
+tidy(historybivar_fit) %>%
+  kable(caption = "Tidy results: total_cases_2024_26 ~ pct_years_any")
+# Model fit summary
+glance(historybivar_fit) %>%
+  select(r.squared, adj.r.squared, sigma, statistic, p.value, AIC, BIC, nobs) %>%
+  kable(caption = "Model fit summary: total_cases_2024_26 ~ pct_years_any")
+```
+
+```{r}
+# Model 4: Total measles cases vs change in high school graduation rate
+
+# Fit bivariate model with education change as predictor
+edubivar_fit <- lm_spec %>%
+  fit(total_cases_2024_26 ~ hsgradratediff, data = bivar_analysis_data)
+
+# Plot
+plot_totalcases_edu <- ggplot(bivar_analysis_data , aes(x = hsgradratediff, y = total_cases_2024_26)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Total Measles Cases vs Change in High School Graduation Rate",
+    x = "High school graduation rate difference",
+    y = "Total measles cases, 2024-2026"
+  ) +
+  theme_minimal()
+plot_totalcases_edu
+# Save plot
+ggsave(here("results","figures","totalcases vs edu biovar.png"), plot = plot_totalcases_edu, width = 6, height = 4)
+
+# Coefficient table
+tidy(edubivar_fit) %>%
+  kable(caption = "Tidy results: total_cases_2024_26 ~ hsgradratediff")
+
+# Save results
+write_csv(tidy(edubivar_fit), here("results", "tables", "tidy_totalcases vs edu biovar.csv"))
+
+# Model fit summary
+glance(edubivar_fit) %>%
+  select(r.squared, adj.r.squared, sigma, statistic, p.value, AIC, BIC, nobs) %>%
+  kable(caption = "Model fit summary: total_cases_2024_26 ~ hsgradratediff")
+# Save results
+write_csv(glance(edubivar_fit), here("results","tables","glance_totalcases vs edu biovar.csv"))
+```
+# Also wanted to see what the models and plots look like if they were log transformed (see below). Since the above models do not make intuitive sense. 
+
+```{r}
+log_bivar_analysis_data <- features %>%
+  mutate(
+    log_total_cases = log1p(total_cases_2024_26)
+  )
+```
+
+```{r}
+# Model 1: Total measles cases (log transformed) vs mean MMR coverage
+# Fit bivariate model with mean MMR coverage as predictor
+
+plot_totalcases_mmr <- mmrbivar_log_fit <- lm_spec %>%
+  fit(log_total_cases ~ mmr_mean, data = log_bivar_analysis_data)
+
+# Plot
+plot_totalcases_mmr <-ggplot(log_bivar_analysis_data , aes(x = mmr_mean, y = log_total_cases)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Total Measles Cases vs Mean MMR Coverage",
+    x = "Mean MMR coverage",
+    y = "Total measles cases, 2024-2026 (log transformed)"
+  ) +
+  theme_minimal()
+plot_totalcases_mmr
+# Save plot
+ggsave(here("results","figures","totalcases vs MMR biovar.png"), plot = plot_totalcases_mmr, width = 6, height = 4)
+
+# Coefficient table
+tidy(mmrbivar_log_fit) %>%
+  kable(caption = "Tidy results: log_total_cases ~ mmr_mean")
+# Save results
+write_csv(tidy(mmrbivar_log_fit), here("results","tables","tidy_totalcases vs MMR biovar.csv"))
+
+# Model fit summary
+glance(mmrbivar_log_fit) %>%
+  select(r.squared, adj.r.squared, sigma, statistic, p.value, AIC, BIC, nobs) %>%
+  kable(caption = "Model fit summary: log_total_cases ~ mmr_mean")
+# Save results
+write_csv(glance(mmrbivar_log_fit), here("results","tables","glance_totalcases vs MMR biovar.csv"))
+```
+# Biovariable Model 1: After log-transforming the data to handle outliers, this model shows that states with higher MMR vaccination rates generally tend to have fewer measles cases. However, this connection isn't strong enough to be definitive, as vaccination rates alone only explain about 4% of the differences seen between states.
+
+```{r}
+# Model 2: Total measles cases vs fraction of years below 95% MMR
+
+# Fit bivariate model with fraction of years below 95% as predictor
+below95bivar_log_fit <- lm_spec %>%
+  fit(log_total_cases ~ frac_years_below_95, data = log_bivar_analysis_data)
+
+# Plot
+plot_totalcases_below95 <-ggplot(log_bivar_analysis_data , aes(x = frac_years_below_95, y = log_total_cases)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Total Measles Cases vs Fraction of Years Below 95% MMR",
+    x = "Fraction of years below 95%",
+    y = "Total measles cases, 2024-2026 (log transformed)"
+  ) +
+  theme_minimal()
+plot_totalcases_below95
+# Save plot
+ggsave(here("results","figures","totalcases vs below95 biovar.png"), plot = plot_totalcases_below95, width = 6, height = 4)
+
+# Coefficient table
+tidy(below95bivar_log_fit) %>%
+  kable(caption = "Tidy results: log_total_cases ~ frac_years_below_95")
+
+# Save results
+write_csv(tidy(below95bivar_log_fit), here("results","tables","tidy_totalcases vs below95 biovar.csv"))
+
+# Model fit summary
+glance(below95bivar_log_fit) %>%
+  select(r.squared, adj.r.squared, sigma, statistic, p.value, AIC, BIC, nobs) %>%
+  kable(caption = "Model fit summary: log_total_cases ~ frac_years_below_95")
+# Save results
+write_csv(glance(below95bivar_log_fit), here("results","tables","glance_totalcases vs below95 biovar.csv"))
+```
+# Biovariable Model 2: This model shows that for every year a state's vaccination rate stays below the 95% target, there is a 242% increase in the number of predicted measles cases. While this is the strongest predictor found so far, these vaccination gaps still only explain about 7% of the total differences seen between states.
+```{r}
+# Model 3: Total measles cases (log transformed) vs historical measles persistence
+
+# Fit bivariate model with historical measles persistence as predictor
+historybivar_log_fit <- lm_spec %>%
+  fit(log_total_cases ~ pct_years_any, data = log_bivar_analysis_data )
+
+# Plot
+plot_totalcases_history <-ggplot(log_bivar_analysis_data , aes(x = pct_years_any, y = log_total_cases)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Total Measles Cases vs Historical Measles Persistence",
+    x = "Percent of historical years with any measles cases",
+    y = "Total measles cases, 2024-2026 (log transformed)"
+  ) +
+  theme_minimal()
+plot_totalcases_history
+# Save plot
+ggsave(here("results","figures","totalcases vs history biovar.png"), plot = plot_totalcases_history, width = 6, height = 4)
+
+# Coefficient table
+tidy(historybivar_log_fit) %>%
+  kable(caption = "Tidy results: log_total_cases ~ pct_years_any")
+# Save results
+write_csv(tidy(historybivar_log_fit), here("results","tables","tidy_totalcases vs history biovar.csv"))
+
+# Model fit summary
+glance(historybivar_log_fit) %>%
+  select(r.squared, adj.r.squared, sigma, statistic, p.value, AIC, BIC, nobs) %>%
+  kable(caption = "Model fit summary: log_total_cases ~ pct_years_any")
+
+# Save results
+write_csv(glance(historybivar_log_fit), here("results","tables","glance_totalcases vs history biovar.csv"))
+
+```
+# Biovariable Model 3:This model shows that states with a constant history of measles outbreaks can see a 656% increase in predicted total cases compared to states with no history of disease. Even though this history of disease presence is a better predictor than some other factors, it still only explains about 4.4% of why case numbers differ from state to state.```{r}
+```{r}
+# Model 4: Total measles cases (log transformed) vs change in high school graduation rate
+
+# Fit bivariate model with education change as predictor
+edubivar_log_fit <- lm_spec %>%
+  fit(log_total_cases ~ hsgradratediff, data = log_bivar_analysis_data)
+
+# Plot
+plot_totalcases_log_edu <- ggplot(log_bivar_analysis_data , aes(x = hsgradratediff, y = log_total_cases)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Total Measles Cases vs Change in High School Graduation Rate",
+    x = "High school graduation rate difference",
+    y = "Total measles cases, 2024-2026"
+  ) +
+  theme_minimal()
+plot_totalcases_log_edu
+# Save plot
+ggsave(here("results","figures","totalcases vs edu log trans biovar.png"), plot = plot_totalcases_log_edu, width = 6, height = 4)
+
+# Coefficient table
+tidy(edubivar_log_fit) %>%
+  kable(caption = "Tidy results: log_total_cases ~ hsgradratediff")
+
+# Save results
+write_csv(tidy(edubivar_log_fit), here("results","tables","tidy_totalcases vs edu log trans biovar.csv"))
+
+# Model fit summary
+glance(edubivar_log_fit) %>%
+  select(r.squared, adj.r.squared, sigma, statistic, p.value, AIC, BIC, nobs) %>%
+  kable(caption = "Model fit summary: log_total_cases ~ hsgradratediff")
+
+# Save results
+write_csv(glance(edubivar_log_fit), here("results","tables","glance_totalcases vs edu log trans biovar.csv"))
+```
