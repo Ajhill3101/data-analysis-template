@@ -47,20 +47,6 @@ author's own and don't reflect their employer.
 
 {{< pagebreak >}}
 
-# Part 1 Project Answers
-
-## Data Description
-The data Austin and I selected is from two different datasets. The first dataset is derived from Project Tycho, a global health database compiling a wealth of data resources for common global health burdens in over 90 different countries. Due to the political discourse surrounding the current measles vaccine, and Austin and I being invested as infectious disease researchers, we honed in on the measles dataset. This measles data compiles 436,932 cases collected through the US Nationally Notified Disease Surveillance System. This data was collected weekly, and includes other variables such as place of acquisition, mortality outcome, cumulative nature and age range. This data can further be broken down by the state/U.S. territory in which the case was reported. The second set of data we are looking to use is a compilation of multiple measles record collections from the CDC amidst the current outbreaks being seen in the U.S. This data describes recent case reports for measles outbreaks from 2023-2026 broken down by state, yearly cases of measles in the United States from 1985-2026, and data on MMR vaccination rates amongst kindergarteners broken down by state from 2009-2025.
-
-## The Question
-After discussion, Joe and I came up with the following question: "What factors might explain the current measles outbreaks seen in the U.S." In particular, we are curious to explore whether past trends in persistent measles cases and vaccination coverage explain the trends we see in particular states acting as outbreak hubs in the U.S.. We are interested in seeing if there are any states which show persistent measles incidence over time from the early 1980s to 2000s and whether this might predict certain states as candidate states for outbreaks. We are also interested in investigating trends of MMR vaccination in kindergarteners and test whether this can predict a state prime for a measles outbreak. We are looking for patterns of specific states that are having current measles outbreaks in 2024-26 (South Carolina, Texas, etc.) having past trends in measles persistence or vaccination struggles as an explanation as to why they are having these outbreaks. 
-
-## Suggestions for analysis
-Our vision for analysis would look to assign a mean value for vaccination rate across the sampled data and run a linear regression analysis to see if a lower vaccination rate amongst kindergartener correlates with a high measles incidence rate between 2024-26. Also, after some searching around, we think it would be interesting to try to run an Autoregressive Integrated Moving Average (ARIMA) model, which is used to predict future data from time series data. We think it would be interesting to implement this with the 1980s to 2000s measles case data from Project Tycho to identify any states with low-level persistent measles cases, as these states would likely predict to have a future measles burden whereas other states would predict to have no case burden. We are unsure of how complicated this could be, but could be interesting to try!
-
-## Background Information for the Question
-As you may know, measles is becoming a major problem again in the United States. Measles was once eliminated in the United States in 2000, but it has since made headlines in recent years for major outbreaks amongst children. Much of this is proposed to be due to lower MMR vaccination rates, but we wonder if there might be additional explanation from past trends in measles incidence. There have been studies which look at predictor variables as indicators of states that may have measles outbreaks, including MMR vaccination rate, population of the county, and international air travel data, but very little attention has been directed at historical data and whether trends of past persistent measles incidence could explain states having current outbreaks.
-
 # Summary/Abstract
 _Write a summary of your project._
 
@@ -72,13 +58,19 @@ _It is recommended to use a structured abstract with Background/Methods/Results/
 # Introduction 
 
 ## General Background Information
-_Provide enough background on your topic that others can understand the why and how of your analysis_ 
+Measles is a globarlly distributed, highly contagious viral infection induced by the measles virus. Also known as the rubeola virus, this Paramyxoviridae virus, belonging to the Morbillivirus genus, induces upwards of 300,000 cases per year, with an estimated incidence of 29 per 1,000,000 individuals. The World Health Organization (WHO) edtimated that the measles virus resulted in the death of 95,000 individuals. 
+
+First introduced in 1963 in the United States, the measles vaccine, which was enhanced to also immunize against mumps and rubella in 1971 (coined the MMR vaccine), proved to be a very effective strategy to limit mortality and morbidity due to measles. As part of a study to investigate the impact of the Expanded Programme of Immunization (EPI), a WHO-initiated effort to provide common vaccinations globally, it was found that since 1974, an estimated 94 million out of 154 million lives were saved due to MMR vaccination. However, despite the proven benefits of MMR vaccinatation and the severe consequences of measles infection, vaccination rates are on the decline. To maintain herd immunity, a protective status where a certain vaccination rate in the population enables resistance to spread of a pathogen, measles vaccination rates must be at or above 95%, with a minimum threshold of 90%. 
+
+Since peaking at a 86% global MMR vaccination rate in 2019, vaccination efforts have staggered and slightly dipped. Much progress was halted due to the COVID-19 pandemic, but even several years post-pandemic in 2024, global MMR vaccination rates have not exceeded 84%. Even in the United States, MMR vaccination rates have begun to decline; a recent study has shown of 2,066 interrogated counties in the United States that 78% of these counties reported a decline in MMR vaccination post-COVID-19 pandemic. This raises major concerns that the United States will trend towards not being able to maintain the critical minimum threshold of 90% vaccination for herd immunity protection from measles. In certain communities and states in the United States, measles outbreaks are occurring for the first time in decades, with cases surging past 1,000 cases so far in 2026. These alarming trends raise a need for researchers to better understand where this MMR vaccination distrust is coming from to provide actionable targets to rebuild that trust.
 
 ## Description of data and data source
-The three datasets used in this study comes from two different sources. The first dataset, which looks at historical measles case rates from as early as the late 1800s, is sourced from Project Tycho, an open-access global health data resource offered and maintained by the University of Pittsburgh. This data repository offers a large set of pre- and self-compiled data spanning a variety of pathogenic diseases. This study self-compiled a measles dataset, sourced from the United States Nationally Notifiable Surveillance System, spanning 352,518 non-cumulative cases recorded from the 50 United States and multiple U.S. territories, including American Samoa, Guam, Northern Marina Islands, U.S. Virgin Islands and the District of Columbia. These cases cover an age range of 0-130 years of age and provides a number of cases reported within a given period start and end date. The second and third datasets were derived from the CDC's website on measles cases and outbreaks: https://www.cdc.gov/measles/data-research/index.html. This resource offered two datasets analyzed in this study. First, a simple data table of detected measles cases in the 50 United States from 2024-2026. The second dataset is a data table compiling MMR vaccination rates in the 50 United States from 2009 through 2025. This data compiles 286,000 kindergarteners who reported receiving an MMR vaccine during the school year. This data is broken down based on the state, estimated vaccination rate, population size and the survey type used to obtain this data.
+To investigate possible explanations of MMR vaccination trends and measles outbreaks in the United States, four datasets used in this study comes from two different sources. The first dataset, which looks at historical measles case rates from as early as the late 1800s, is sourced from Project Tycho, an open-access global health data resource offered and maintained by the University of Pittsburgh. This data repository offers a large set of pre- and self-compiled data spanning a variety of pathogenic diseases. This study self-compiled a measles dataset, sourced from the United States Nationally Notifiable Surveillance System, spanning 352,518 non-cumulative cases recorded from the 50 United States and multiple U.S. territories, including American Samoa, Guam, Northern Marina Islands, U.S. Virgin Islands and the District of Columbia. These cases cover an age range of 0-130 years of age and provides a number of cases reported within a given period start and end date.
+
+The second and third datasets were derived from the CDC's website on measles cases and outbreaks: https://www.cdc.gov/measles/data-research/index.html. This resource offered two datasets analyzed in this study. First, a simple data table of detected measles cases in the 50 United States from 2024-2026. The second dataset is a data table compiling MMR vaccination rates in the 50 United States from 2009 through 2025. This data compiles 286,000 kindergarteners who reported receiving an MMR vaccine during the school year. This data is broken down based on the state, estimated vaccination rate, population size and the survey type used to obtain this data. The final dataset used in this study was sourced from a study from the National Center for Education Statistics, in which attainment rates for high school and post-graduation educations were assessed for all 50 U.S. states and Puerto Rico. This data was collected in two different years, 2012 and 2022, in an effort to match the time periods for the MMR vaccination rate dataset.
 
 ## Questions/Hypotheses to be addressed
-Through this analysis, we are investigating whether historical measles incidence can be a predictor for emerging measles cases/outbreaks and current trends in vaccination. Taking inspiration from what history can teach us, we are curious if trends in measles incidence from the 1980s through early 2000s can explain why certain states are having major outbreaks of measles and if this is related to vaccine hesitancy in these states. We hypothesize that states with shorter-lived burdens are more hesitant to vaccinate, due to it being normalized in their community as measles being a less severe threat. This normalization of measles as not a concern for their community then subsequently creates hesitancy to vaccinate, and we hypothesize that this trend in less vaccination correlates with states having outbreaks of measles cases in 2024-2026.
+Through this analysis, we are investigating several different factors to assess whether they can be used as predictors for emerging measles cases/outbreaks and current trends in MMR vaccination rates. First, we investigated historical measles incidence to understand whether past history with measles, and a lingering presence of measles in a community, could influence current trends and attitudes towards vaccination. We hypothesize that states with shorter-lived burdens are more hesitant to vaccinate, due to it being normalized in their community as measles being a less severe threat. This normalization of measles as not a concern for their community then subsequently creates hesitancy to vaccinate, and we hypothesize that this trend in less vaccination correlates with states having outbreaks of measles cases in 2024-2026. Second, we sought to investigate whether education levels could predict MMR vaccination rates and current measles outbreaks. We hypothesized that states with higher rates of post-high school education could have higher rates of MMR vaccination, which could correlate with a lesser burden of measles cases.
 
 To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the BibTeX file specified in the YAML header above and have the right BibTeX key. Then you can include like this:
 
@@ -104,36 +96,169 @@ We store those figures in the `assets` folder.
 ```
 
 
-
+# Methods
 
 ## Data acquisition
 Data was obtained from Project Tycho and the CDC as previously mentioned. In brief, CDC data was downloaded from their weekly updated repository. Data was downloaded on February 3, 2026[1]. Non-cumulative measles case data from Project Tycho[2] was downloaded with the following parameters: Condition = measles, Source name = US Nationally Notifiable Disease Surveillance System, Interval Type = Week, Cumulative = No.
 
 
 ## Data import and cleaning
-_Write code that reads in the file and cleans it so it's ready for analysis. Since this will be fairly long code for most datasets, it might be a good idea to have it in one or several R scripts. If that is the case, explain here briefly what kind of cleaning/processing you do, and provide more details and well documented code somewhere (e.g. as supplement in a paper). All materials, including files that contain code, should be commented well so everyone can follow along._
-
-Data import/cleaning is mostly done, so for now we will include a brief summation of what we have done:
-- imported data using read_csv (all datasets)
-
-### MMR Vaccination Data By State (CDC)
-- standardize state names
-- create a new column that extracts year from starting period date
-- remove % from numbers in estimated percent vaccinated column
-- Collapse data to one row per state
+_Write code that reads in the file and cleans it so it's ready for analysis. Since this will be fairly long code for most datasets, it might be a good idea to have it in one or several R scripts. If that is the case, explain here briefly what kind of cleaning/processing you do, and provide more details and well documented code somewhere (e.g. as supplement in a paper). All materials, including files that contain code, should be commented well so everyone can follow along._P
 
 ### CDC Measles 2024-26 Data
-- rename columns (location -> state, year_raw -> cases)
-- remove NA values from state and year columns
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| results: false
+
+library(here)
+library(dplyr)
+library(janitor)
+library(readxl)
+library(tidyverse)
+
+#Load Raw CDC Measles Data
+cdcmeaslesbystate_raw <- read_csv(here("data/raw-data/cdc-measlesbystate.csv"), show_col_types = FALSE) |>
+  clean_names()
+
+#Clean the CDC Measles Data
+##Rename the location column to state
+  if ("location" %in% names(cdcmeaslesbystate_raw)) {
+  cdcmeaslesbystate_raw <- cdcmeaslesbystate_raw |> rename(state = location)
+}
+##Rename columns while converting the dataset from a wide format to a long format
+  cdcmeaslesbystate_long <- cdcmeaslesbystate_raw |>
+  select(state, matches("^x?\\d{4}$")) |>
+  pivot_longer(
+    cols = matches("^x?\\d{4}$"),
+    names_to = "year_raw",
+    values_to = "cases"
+  ) |>
+  mutate(
+    year  = readr::parse_number(year_raw), #extract year numbers from string values
+    cases = suppressWarnings(as.numeric(cases)), #convert case variable to numeric
+    state = stringr::str_to_title(stringr::str_squish(state)) #Format states to be capitalized
+  ) |>
+  filter(
+    !is.na(state), 
+    !is.na(year), 
+    state != "District Of Columbia") ###Remove rows associated with District of Columbia
+```
 
 ### Project Tycho Historical Measles Data
-- Convert weekly totals to yearly totals by state
-- Add column that looks at longest streaks of consecutive years with measles cases
-- Remove US territories with incomplete data
+```{r}
+#Load Raw Historical Measles Data
+hist_raw <- read_csv(here("data/raw-data/measles-noncumulative.csv"), show_col_types = FALSE) |>
+  clean_names()
+
+#Clean the Historical Measles Data
+##Clean the raw data and make a new dataframe containing yearly measles data
+hist_yearly <- hist_raw |>
+  transmute( ###create new dataframe containing these variables
+    state = str_to_title(str_squish(admin1name)), ###convert states to be in similar format to previous dataset
+    start_date = ymd(period_start_date), ###convert period state date variable to a proper start date
+    year = year(start_date), ###extract year from start_date
+    cases = as.numeric(count_value) ###make count_value a numeric variable
+  ) |>
+  filter(
+    !is.na(state), 
+    !is.na(year), 
+    !is.na(cases),
+    !state %in% c("American Samoa", "Guam", "District of Columbia", "Northern Mariana Islands", "Puerto Rico", "Virgin Islands, U.s.")) |>
+    ###remove cities and U.S. territories
+  group_by(state, year) |> ###group data by state and year
+  summarise(cases = sum(cases, na.rm = TRUE), .groups = "drop") ###sum up number of cases by year for each state
+```
+
+### MMR Vaccination Data By State (CDC)
+```{r}
+#Load Raw MMR Vaccination Data
+mmr_raw <- read_csv(here("data/raw-data/cdc-mmr2024.csv"), show_col_types = FALSE) |>
+  clean_names()
+
+#Clean the MMR Vaccination Data
+##Clean core variables
+mmr_clean <- mmr_raw |>
+  transmute(
+    state = str_to_title(str_squish(location)),                 # standardize state names
+    school_year = str_squish(school_year),                      # trim spaces
+    school_year_start = as.integer(str_extract(school_year, "\\d{4}")), # extract starting year
+    mmr_pct = readr::parse_number(estimated_percent_vaccinated),# handles "95.4%" or "95.4"
+    category = if ("category" %in% names(mmr_raw)) category else NA_character_
+  ) |>
+  filter(!is.na(state), 
+  !is.na(school_year_start), 
+  !is.na(mmr_pct),
+  !state %in% c(
+    "Houston", "San Antonio", "New York City", "District Of Columbia" 
+  )
+  )
+##Collapse to ONE row per state-year (handles duplicate categories/rows)
+mmr_state_year <- mmr_clean |>
+  group_by(state, school_year_start) |>
+  summarise(
+    mmr_pct = mean(mmr_pct, na.rm = TRUE),   # average across duplicates if present
+    n_rows = n(),                             # how many rows contributed
+    .groups = "drop"
+  )
+```
+
+### Educational Attainment Data
+```{r}
+#Load Raw Educational Attainment Data
+education_raw <- read_excel(here("data/raw-data/educationattainment.xlsx"), skip = 6) |>
+  clean_names()
+
+#Clean the Educational Attainment Data
+##Remove NA columns due to how the data is loaded in
+education_clean <- education_raw %>% select(-c("x3", "x6", "x9", "x12", "x15", "x18", "x21", "x24", "x27", "x30", "x33", "x36", "x39", "x42"))
+##Rename the columns due to the structure of the excel datasheet
+education_clean <- rename(
+  education_clean,
+  "state" = "x1",
+  "2012_18to24hs_percent" = "x2",
+  "2012_18to24hs_sd" = "x4",
+  "2022_18to24hs_percent" = "x3_2",
+  "2022_18to24hs_sd" = "x7",
+  "2012_25pluslessthanhs_percent" = "x4_2",
+  "2012_25pluslessthanhs_sd" = "x10",
+  "2012_25plushsorhigher_percent" = "x5",
+  "2012_25plushsorhigher_sd" = "x13",
+  "2012_25plustotalbachgrad_percent" = "x6_2",
+  "2012_25plustotalbachgrad_sd" = "x16",
+  "2012_25plusbachonly_percent" = "x7_2",
+  "2012_25plusto24bachonly_sd" = "x19",
+  "2012_25plusgraddegree_percent" = "x8",
+  "2012_25plusto24graddegree_sd" = "x22",
+  "2022_25pluslessthanhs_percent" = "x9_2",
+  "2022_25pluslessthanhs_sd" = "x25",
+  "2022_25plushsorhighertotal_percent" = "x10_2",
+  "2022_25plushsorhighertotal_sd" = "x28",
+  "2022_25plushsorhigherhsonly_percent" = "x11",
+  "2022_25plushsorhigherhsonly_sd" = "x31",
+  "2022_25plussomecolldegree_percent" = "x12_32",
+  "2022_25plussomecolldegree_sd" = "x12_34",
+  "2022_25plusbachorhighertotal_percent" = "x13_2",
+  "2022_25plusto24bachorhighertotal_sd" = "x37",
+  "2022_25plusbachonly_percent" = "x14",
+  "2022_25plusto24bachonly_sd" = "x40",
+  "2022_25plusgraddegree_percent" = "x15_2",
+  "2022_25plusto24graddegree_sd" = "x43"
+)
+##Remove rows of data not affiliated with the 50 U.S. States
+###Make a df which contains United States, District of Columbia, Other Jurisdictions, Puerto Rico and final three rows
+rows_to_remove <- c(1, 10, 53, 54, 55, 56, 57)
+###Use rows_to_remove to remove the certain jurisdictions using slice()
+education_clean <- education_clean %>% slice(-rows_to_remove)
+##Add a column which calculates the difference between 2012 and 2022 high school graduation rates for individuals aged 18-24
+education_clean <- education_clean %>%
+  mutate(`hsgradratediff` = `2022_18to24hs_percent` - `2012_18to24hs_percent`
+  )
+```
 
 ## Statistical analysis
-_Explain anything related to your statistical analyses._
-
+Logistical regressions were applied to explore whether certain predictor variables, such as educational attainment, historical measles burden and MMR vaccination rates, could predictpr current measles burden in the 50 U.S. states.
 
 {{< pagebreak >}}
 

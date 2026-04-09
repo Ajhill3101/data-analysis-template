@@ -1,5 +1,5 @@
 ---
-title: "Comparison of Measles outbreak hubs (2024–2026), historical Measles persistence (1980-2009), MMR coverage, and education level across the United States"
+title: "Measles outbreak hubs (2024–2026) vs historical persistence and MMR coverage"
 output: html_document
 ---
 
@@ -13,7 +13,7 @@ library(scales)      # percent() formatting
 library(here)        # Stable project-root paths
 ```
 
-# **Processing and Cleaning data**
+
 # Loading cdc-measlesbystate.csv
 ```{r}
 #Load in raw CDC measles data
@@ -252,7 +252,7 @@ education_clean <- education_clean %>%
   )
 ```
 
-# **Exploratory summaries and plots from cleaned data**
+# Exploratory summaries and plots from cleaned data
 ```{r}
 #Exploratory summaries for MMR data
 
@@ -410,7 +410,7 @@ cdcmeaslesbystate_long |>
 ```{r}
 # Exploratory summaries from historic measles data
 
-# Plot 1: States with most persistent measles presence (1980–2009)
+# Plot 1
 hist_state |>
   arrange(desc(pct_years_any)) |>
   slice_head(n = 15) |>
@@ -426,7 +426,7 @@ hist_state |>
   ) +
   theme_minimal()
 
-# Plot 2: Longest consecutive measles streak by state
+# Plot 2
 hist_state |>
   arrange(desc(longest_run_nonzero)) |>
   slice_head(n = 15) |>
@@ -454,8 +454,8 @@ education_clean |>
   coord_flip() +
   labs(
     title = "Top states by high school graduation rates in 2012",
-    x = "Percent",
-    y = "State"
+    x = "State",
+    y = "Percent"
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
@@ -463,23 +463,25 @@ education_clean |>
 # Plot 2: 18 to 24 year old percent graduation from high school by state in 2022
 education_clean |>
   arrange(desc(`2022_18to24hs_percent`)) |>
-  ggplot(aes(x = `2022_18to24hs_percent`, 
+  ggplot(aes(x = `2022_18to24hs_percent`,
              y = reorder(state, `2022_18to24hs_percent`))) +
   geom_point() +
   coord_flip() +
   labs(
     title = "Top states by high school graduation rates in 2022",
-    x = "Percent",
-    y = "State"    
+    x = "State",
+    y = "Percent"
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
 #Plot 3: High school graduation rate differences over time
 education_clean |>
   arrange(desc(`hsgradratediff`)) |>
-  ggplot(aes(x = reorder(state, hsgradratediff), # States on the X
-             y = hsgradratediff)) +
+  ggplot(aes(x = `hsgradratediff`,
+             y = reorder(state, `hsgradratediff`))) +
   geom_point() +
+  coord_flip() +
   labs(
     title = "Graduation Rate Differences from 2012 to 2022",
     x = "State",
@@ -755,10 +757,6 @@ features |>
 
   theme_minimal()
 ```
-
-
-
-
 
 # **Data Analysis** 
 
