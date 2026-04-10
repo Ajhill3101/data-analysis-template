@@ -309,6 +309,9 @@ features <- recent_state |>
   left_join(mmr_state_features, by = "state")
   features |> glimpse()
   features |> summarise(across(where(is.numeric), ~mean(is.na(.))))
+
+#Save Cleaned State Data for All Variables
+saveRDS(features, "data/processed-data/measlesstatefeatures_data.rds")
 ```
 ```{r}
 # Exploratory plots
@@ -948,7 +951,7 @@ glance(mmrbivar_log_fit) %>%
 # Save results
 write_csv(glance(mmrbivar_log_fit), here("results","tables","glance_totalcases vs MMR biovar.csv"))
 ```
-# Biovariable Model 1: After log-transforming the data to handle outliers, this model shows that states with higher MMR vaccination rates generally tend to have fewer measles cases. However, this connection isn't strong enough to be definitive, as vaccination rates alone only explain about 4% of the differences seen between states.
+Biovariable Model 1: After log-transforming the data to handle outliers, this model shows that states with higher MMR vaccination rates generally tend to have fewer measles cases. However, this connection isn't strong enough to be definitive, as vaccination rates alone only explain about 4% of the differences seen between states.
 
 ```{r}
 # Model 2: Total measles cases vs fraction of years below 95% MMR
@@ -985,7 +988,7 @@ glance(below95bivar_log_fit) %>%
 # Save results
 write_csv(glance(below95bivar_log_fit), here("results","tables","glance_totalcases vs below95 biovar.csv"))
 ```
-# Biovariable Model 2: This model shows that for every year a state's vaccination rate stays below the 95% target, there is a 242% increase in the number of predicted measles cases. While this is the strongest predictor found so far, these vaccination gaps still only explain about 7% of the total differences seen between states.
+Biovariable Model 2: This model shows that for every year a state's vaccination rate stays below the 95% target, there is a 242% increase in the number of predicted measles cases. While this is the strongest predictor found so far, these vaccination gaps still only explain about 7% of the total differences seen between states.
 ```{r}
 # Model 3: Total measles cases (log transformed) vs historical measles persistence
 
@@ -1022,7 +1025,7 @@ glance(historybivar_log_fit) %>%
 write_csv(glance(historybivar_log_fit), here("results","tables","glance_totalcases vs history biovar.csv"))
 
 ```
-# Biovariable Model 3:This model shows that states with a constant history of measles outbreaks can see a 656% increase in predicted total cases compared to states with no history of disease. Even though this history of disease presence is a better predictor than some other factors, it still only explains about 4.4% of why case numbers differ from state to state.```{r}
+Biovariable Model 3:This model shows that states with a constant history of measles outbreaks can see a 656% increase in predicted total cases compared to states with no history of disease. Even though this history of disease presence is a better predictor than some other factors, it still only explains about 4.4% of why case numbers differ from state to state.```{r}
 ```{r}
 # Model 4: Total measles cases (log transformed) vs change in high school graduation rate
 
@@ -1057,5 +1060,383 @@ glance(edubivar_log_fit) %>%
   kable(caption = "Model fit summary: log_total_cases ~ hsgradratediff")
 
 # Save results
-write_csv(glance(edubivar_log_fit), here("results","tables","glance_totalcases vs edu log trans biovar.csv"))
+write_csv(glance(edubivar_log_fit), here("results","tables","glance_totalcases vs edu log trans biovar.csv")) 
 ```
+
+Biovariable Model 4: This model shows that for every percentage point increase in a state's high school graduation rate, there is a 13.9% increase in the number of predicted measles cases. However, this link is very weak and only explains about 3% of the differences in case numbers between states.Therefore there is little evidence to suggest that graduation rate trends are a primary driver of measles outbreaks. 
+
+# Multivariable analysis
+
+```{r}
+# log transform variable to minimize outliers
+
+# Helper function
+# signed_log1p(x) behaves like log1p(x) for positive values, but it also works for negative values:
+#   signed_log1p(x) = sign(x) * log(1 + abs(x))
+signed_log1p <- function(x) {
+  sign(x) * log1p(abs(x))
+}
+
+set.seed(123)
+
+# 4-PREDICTOR MODEL DATA
+
+# Outcome:
+#   total_cases_2024_26
+
+# Predictors:
+#   pct_years_any         = historical measles
+#   mmr_mean              = mean MMR
+#   frac_years_below_95   = below 95% MMR vaccination
+#   hsgradratediff        = incomplete high school rate
+
+main_data <- features %>%
+  select(
+    total_cases_2024_26,
+    pct_years_any,
+    mmr_mean,
+    frac_years_below_95,
+    hsgradratediff
+  ) %>%
+  drop_na() %>%
+  mutate(
+    log_total_cases = signed_log1p(total_cases_2024_26),
+    log_pct_years_any = signed_log1p(pct_years_any),
+    log_mmr_mean = signed_log1p(mmr_mean),
+    log_frac_years_below_95 = signed_log1p(frac_years_below_95),
+    log_hsgradratediff = signed_log1p(hsgradratediff)
+  )
+
+# Train/test split for the main 4-predictor model
+
+main_split <- initial_split(main_data, prop = 0.75)
+
+train_data <- training(main_split)
+test_data  <- testing(main_split)
+
+
+# 10-fold CV on training data only
+set.seed(123)
+cv_folds <- vfold_cv(train_data, v = 10)
+
+
+# Linear regression specification
+lm_spec <- linear_reg() %>%
+  set_engine("lm")
+
+# MAIN LOG-TRANSFORMED 4-PREDICTOR MODEL
+main_wf <- workflow() %>%
+  add_model(lm_spec) %>%
+  add_formula(
+    log_total_cases ~
+      log_pct_years_any +
+      log_mmr_mean +
+      log_frac_years_below_95 +
+      log_hsgradratediff
+  )
+
+# Fit on training data
+main_fit <- fit(main_wf, data = train_data)
+
+# Training MAE
+# Note: this MAE is on the log-transformed outcome scale
+
+train_preds <- predict(main_fit, new_data = train_data) %>%
+  bind_cols(train_data)
+
+train_mae <- train_preds %>%
+  mae(truth = log_total_cases, estimate = .pred)
+
+train_mae
+
+
+# Cross-validated MAE
+main_cv <- fit_resamples(
+  main_wf,
+  resamples = cv_folds,
+  metrics = metric_set(mae)
+)
+
+main_cv_metrics <- collect_metrics(main_cv)
+main_cv_metrics
+
+
+# Test MAE
+test_preds <- predict(main_fit, new_data = test_data) %>%
+  bind_cols(test_data)
+
+test_mae <- test_preds %>%
+  mae(truth = log_total_cases, estimate = .pred)
+
+test_mae
+
+
+# Summary table for the main model
+
+main_mae_summary <- tibble(
+  dataset = c("Training", "Cross-validation", "Test"),
+  MAE = c(
+    train_mae$.estimate,
+    main_cv_metrics$mean[main_cv_metrics$.metric == "mae"],
+    test_mae$.estimate
+  )
+)
+
+main_mae_summary
+# summary table when using all 4 predictors 
+
+# TEST WHICH OF THE 4 MAIN PREDICTORS ARE BEST
+
+# Idea:
+# Compare the full 4-predictor model to models that remove
+# one predictor at a time. If MAE gets higher when a predictor is removed, that predictor is helping.
+
+no_hist_wf <- workflow() %>%
+  add_model(lm_spec) %>%
+  add_formula(
+    log_total_cases ~
+      log_mmr_mean +
+      log_frac_years_below_95 +
+      log_hsgradratediff
+  )
+
+no_mmrmean_wf <- workflow() %>%
+  add_model(lm_spec) %>%
+  add_formula(
+    log_total_cases ~
+      log_pct_years_any +
+      log_frac_years_below_95 +
+      log_hsgradratediff
+  )
+
+no_below95_wf <- workflow() %>%
+  add_model(lm_spec) %>%
+  add_formula(
+    log_total_cases ~
+      log_pct_years_any +
+      log_mmr_mean +
+      log_hsgradratediff
+  )
+
+no_hsgrad_wf <- workflow() %>%
+  add_model(lm_spec) %>%
+  add_formula(
+    log_total_cases ~
+      log_pct_years_any +
+      log_mmr_mean +
+      log_frac_years_below_95
+  )
+
+# Cross-validation for each reduced model
+no_hist_cv <- fit_resamples(
+  no_hist_wf,
+  resamples = cv_folds,
+  metrics = metric_set(mae)
+)
+
+no_mmrmean_cv <- fit_resamples(
+  no_mmrmean_wf,
+  resamples = cv_folds,
+  metrics = metric_set(mae)
+)
+
+no_below95_cv <- fit_resamples(
+  no_below95_wf,
+  resamples = cv_folds,
+  metrics = metric_set(mae)
+)
+
+no_hsgrad_cv <- fit_resamples(
+  no_hsgrad_wf,
+  resamples = cv_folds,
+  metrics = metric_set(mae)
+)
+
+# Put CV MAE values into one comparison table
+predictor_importance_table <- tibble(
+  model = c(
+    "Full 4-predictor log model",
+    "Without pct_years_any",
+    "Without mmr_mean",
+    "Without frac_years_below_95",
+    "Without hsgradratediff"
+  ),
+  cv_mae = c(
+    collect_metrics(main_cv)$mean[collect_metrics(main_cv)$.metric == "mae"],
+    collect_metrics(no_hist_cv)$mean[collect_metrics(no_hist_cv)$.metric == "mae"],
+    collect_metrics(no_mmrmean_cv)$mean[collect_metrics(no_mmrmean_cv)$.metric == "mae"],
+    collect_metrics(no_below95_cv)$mean[collect_metrics(no_below95_cv)$.metric == "mae"],
+    collect_metrics(no_hsgrad_cv)$mean[collect_metrics(no_hsgrad_cv)$.metric == "mae"]
+  )
+) %>%
+  mutate(
+    mae_increase_vs_full = cv_mae - cv_mae[model == "Full 4-predictor log model"]
+  ) %>%
+  arrange(cv_mae)
+
+# table for which of the 4 predictors performs the best
+predictor_importance_table
+# Save Table
+write_csv(
+  predictor_importance_table,
+  here("results","tables","which_of_the_4_predictors_performs_best.csv")
+)
+
+  
+# plot for predictor importance
+predictor_importance_plot <- predictor_importance_table %>%
+  filter(model != "Full 4-predictor log model") %>%
+  ggplot(aes(x = reorder(model, mae_increase_vs_full), y = mae_increase_vs_full)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Predictor importance from change in CV MAE",
+    x = "Model with predictor removed",
+    y = "Increase in MAE vs full model"
+  ) +
+  theme_minimal()
+
+predictor_importance_plot
+
+# Save plot
+ggsave(
+  here("results","figures","Predictor_Importance.png"),
+  plot = predictor_importance_plot,
+  width = 6,
+  height = 4
+)
+```
+
+```{r}
+
+# Two-predictor model using best predictors
+# mean MMR + below 95% vaccination
+
+signed_log1p <- function(x) {
+  sign(x) * log1p(abs(x))
+}
+
+two_pred_data <- features %>%
+  select(
+    total_cases_2024_26,
+    mmr_mean,
+    frac_years_below_95
+  ) %>%
+  drop_na() %>%
+  mutate(
+    log_total_cases = signed_log1p(total_cases_2024_26),
+    log_mmr_mean = signed_log1p(mmr_mean),
+    log_frac_years_below_95 = signed_log1p(frac_years_below_95)
+  )
+
+
+# Train / test split
+set.seed(123)
+
+two_split <- initial_split(two_pred_data, prop = 0.75)
+
+train_data <- training(two_split)
+test_data  <- testing(two_split)
+
+
+# Model specification
+lm_spec <- linear_reg() %>%
+  set_engine("lm")
+
+two_wf <- workflow() %>%
+  add_model(lm_spec) %>%
+  add_formula(
+    log_total_cases ~
+      log_mmr_mean +
+      log_frac_years_below_95
+  )
+
+
+# Fit model
+
+two_fit <- fit(two_wf, data = train_data)
+
+
+# Training MAE
+train_preds <- predict(two_fit, train_data) %>%
+  bind_cols(train_data)
+
+train_mae <- train_preds %>%
+  mae(truth = log_total_cases, estimate = .pred)
+
+train_mae
+
+
+
+# 10-fold cross validation
+set.seed(123)
+
+cv_folds <- vfold_cv(train_data, v = 10)
+
+cv_results <- fit_resamples(
+  two_wf,
+  resamples = cv_folds,
+  metrics = metric_set(mae)
+)
+
+collect_metrics(cv_results)
+
+
+
+# Test MAE
+test_preds <- predict(two_fit, test_data) %>%
+  bind_cols(test_data)
+
+test_mae <- test_preds %>%
+  mae(truth = log_total_cases, estimate = .pred)
+
+test_mae
+
+
+
+# MAE summary table
+mae_summary <- tibble(
+  dataset = c("Training", "Cross-validation", "Test"),
+  MAE = c(
+    train_mae$.estimate,
+    collect_metrics(cv_results)$mean,
+    test_mae$.estimate
+  )
+)
+
+mae_summary
+# Summary of how the performance of the two prediction model
+# Save summary
+write_csv(
+  mae_summary,(here("results","tables","Two-Predictor_Model_Summary.csv")))
+
+# Save summary
+write_csv(
+  mae_summary,
+  here("results", "tables", "Two-Predictor_Model_Summary.csv")
+)
+
+# Create plot
+two_predictor_actual_plot <- ggplot(train_preds, aes(x = log_total_cases, y = .pred)) +
+  geom_point(alpha = 0.7) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  labs(
+    title = "Two-Predictor Model: Predicted vs Actual Measles Cases",
+    subtitle = "Predictors: Mean MMR and Below-95% Vaccination Rate",
+    x = "Actual (log-transformed measles cases)",
+    y = "Predicted (log-transformed measles cases)"
+  ) +
+  theme_minimal()
+
+# Show plot
+two_predictor_actual_plot
+
+# Save plot
+ggsave(
+  filename = here("results", "figures", "Two-Predictor_Model.png"),
+  plot = two_predictor_actual_plot,
+  width = 6,
+  height = 4
+)
+```
+The predicted versus actual plot shows points scattered around the 45-degree line, indicating that the model captures the general relationship between vaccination rates and measles cases. While predictions are not exact, the diagonal trend suggests the two predictors provide meaningful predictive information.
