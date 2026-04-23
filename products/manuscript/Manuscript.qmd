@@ -14,9 +14,6 @@ resources:
   - results/figures/unnamed-chunk-19-1.png
 ---
 
-The structure below is one possible setup for a manuscript stemming from a data analysis project. It loosely follows the structure of a standard scientific manuscript. Adjust as needed. You don't need to have exactly these sections, but the content covering those sections should be addressed.
-
-This uses [MS Word as output format](https://quarto.org/docs/output-formats/ms-word.html). See [the Quarto documentation](https://quarto.org/) for instructions on how to use other formats.
 
 
 ```{r, echo=FALSE, message=FALSE}
@@ -39,7 +36,6 @@ library(knitr)
 
 $*$ These authors contributed equally to this work.
 
-$\land$ Corresponding author: some@email.com
 
 $\dagger$ Disclaimer: The opinions expressed in this article are the
 author's own and don't reflect their employer.
@@ -47,18 +43,15 @@ author's own and don't reflect their employer.
 
 {{< pagebreak >}}
 
-# Summary/Abstract
-_Write a summary of your project._
-
-_It is recommended to use a structured abstract with Background/Methods/Results/Discussion sections._
-
+# Abstract
+This study examines measles incidence trends in the United States, focusing on how vaccination coverage and demographic factors contribute to variation in case counts and whether more flexible modeling approaches improve predictive performance. Using publicly available data, demographic, socioeconomic, and vaccination-related variables were analyzed for their association with measles incidence. Linear and multivariable regression models show that lower vaccination coverage is associated with higher measles case counts, supporting the hypothesis that vaccination rates are a key driver of disease trends. Machine learning models were then used to improve prediction and capture nonlinear relationships, demonstrating stronger performance and revealing complex interactions among predictors. Across all approaches, vaccination coverage consistently emerged as the most influential factor. These findings highlight the importance of maintaining high immunization rates and demonstrate the value of machine learning methods in understanding and predicting epidemiological patterns.
 {{< pagebreak >}}
 
 
 # Introduction 
 
 ## General Background Information
-Measles is a globarlly distributed, highly contagious viral infection induced by the measles virus [@misin2020]. Also known as the rubeola virus, this Paramyxoviridae virus, belonging to the Morbillivirus genus, induces upwards of 300,000 cases per year, with an estimated incidence of 29 per 1,000,000 individuals [@klose2024]. The World Health Organization (WHO) edtimated that the measles virus resulted in the death of 95,000 individuals [@minta2023]. 
+Measles is a globally distributed, highly contagious viral infection induced by the measles virus [@misin2020]. Also known as the rubeola virus, this Paramyxoviridae virus, belonging to the Morbillivirus genus, induces upwards of 300,000 cases per year, with an estimated incidence of 29 per 1,000,000 individuals [@klose2024]. The World Health Organization (WHO) estimated that the measles virus resulted in the death of 95,000 individuals [@minta2023]. 
 
 First introduced in 1963 in the United States, the measles vaccine, which was enhanced to also immunize against mumps and rubella in 1971 (coined the MMR vaccine), proved to be a very effective strategy to limit mortality and morbidity due to measles [@who2025]. As part of a study to investigate the impact of the Expanded Programme of Immunization (EPI), a WHO-initiated effort to provide common vaccinations globally, it was found that since 1974, an estimated 94 million out of 154 million lives were saved due to MMR vaccination [@shattock2024]. However, despite the proven benefits of MMR vaccinatation and the severe consequences of measles infection, vaccination rates are on the decline [@gambrell2022]. To maintain herd immunity, a protective status where a certain vaccination rate in the population enables resistance to spread of a pathogen, measles vaccination rates must be at or above 95%, with a minimum threshold of 90% [@whoimmun2025]. 
 
@@ -310,19 +303,18 @@ The comparison table in Figure 11 highlights how the four variables performed in
 ```
 
 # Discussion
+The results of this analysis reinforce the well-established relationship between vaccination coverage and measles incidence [@shattock2024]. The overall decline in reported cases over time aligns with the introduction and widespread adoption of the measles vaccine, demonstrating its effectiveness as a public health intervention. However, the presence of periodic increases in case counts suggests that measles has not been fully eliminated as a public health concern within the United States.
 
-## Summary and Interpretation
-_Summarize what you did, what you found and what it means._
+The data patterns observed in this study start to support the idea that even small reductions in vaccination coverage can lead to disproportionately large increases in outbreak risk due to the highly contagious nature of measles. In particular, localized spikes in cases may reflect areas where herd immunity thresholds are not consistently maintained.
 
-## Strengths and Limitations
-_Discuss what you perceive as strengths and limitations of your analysis._
+It is also important to consider limitations in the data and analysis. Reported case counts may be influenced by changes in surveillance practices, reporting accuracy, and public health infrastructure over time [@klose2024]. Additionally, this analysis is primarily descriptive and does not establish causal relationships between vaccination rates and measles incidence. More advanced modeling approaches could further clarify these relationships and account for confounding variables such as demographic shifts and access to healthcare.
+
+Despite these limitations, the observed trends provide meaningful insight into the dynamics of measles transmission in a post-vaccination context. The findings emphasize that maintaining high vaccination coverage is essential not only for preventing individual cases but also for protecting population-level immunity.
 
 ## Conclusions
-_What are the main take-home messages?_
+This study demonstrates that vaccination efforts have played a critical role in reducing measles incidence in the United States, resulting in a substantial long-term decline in reported cases. However, the persistence of periodic outbreaks indicates that measles remains a potential public health threat, particularly in areas with lower vaccination coverage.
 
-_Include citations in your Qmd file using BibTeX, the list of references will automatically be placed at the end_
-
-Note that this cited reference will show up at the end of the document, the reference formatting is determined by the CSL file specified in the YAML header. Many more style files for almost any journal [are available](https://www.zotero.org/styles). You also specify the location of your BibTeX reference file in the YAML. You can call your reference file anything you like.
+The results highlight the importance of continued investment in vaccination programs, public health education, and surveillance systems. Ensuring high and consistent immunization rates is essential to preventing future outbreaks and sustaining the progress achieved over past decades. Future research should focus on identifying specific factors contributing to localized declines in vaccination coverage and developing targeted interventions to address these gaps.
 
 
 {{< pagebreak >}}
