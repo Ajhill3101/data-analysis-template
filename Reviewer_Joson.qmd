@@ -1,0 +1,141 @@
+---
+title: Project Review 
+author: Emil Joson
+date: 4/27/2026
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+---
+
+# Overview
+
+Title of project: Investigation of Measles Cases Trends Post-Vaccination Efforts in the United States
+
+Name of project author(s): Austin Hill, Joe Dainis
+
+Name of project reviewer: Emil Joson
+
+
+# Specific project content evaluation
+Evaluate the different parts of the project by filling in the sections below.
+
+## Background, Context and Motivation
+How well is the context of the project described? Is a comprehensive background, including summary of previous/related work given? Is the project well placed into the context of existing work (including proper referencing of existing work). Is it clear why the project was undertaken and what new information it hopes to provide?
+
+### Feedback and Comments
+Overall, the context of the project is described pretty well. The introduction does a good job laying out the basic background on measles, including what it is, why it’s important, and how vaccination has historically reduced cases. It also brings in relevant statistics (like global incidence, mortality, and vaccination thresholds), which helps ground the study in real-world significance. The discussion of declining vaccination rates, especially post-COVID, clearly sets up why this topic matters right now.
+
+### Summary assessment
+* strong contextualization and motivation
+
+
+## Question description
+How well and clear are the question(s)/hypotheses the project aims to address described? Is it clear how the questions relate to the data?
+
+
+### Feedback and Comments
+The questions and hypotheses are clear and overall well aligned with the goal of understanding predictors of measles outbreaks and vaccination trends. The focus on historical measles burden and education level feels relevant and thoughtfully chosen, and it’s easy to see what the study is aiming to test. Although I did have to read something a couple of times because I wasn't sure I understood what "shorter-lived burdens" were.
+
+### Summary assessment
+* question/hypotheses fully clear
+
+
+## Data description
+How well is the data overall described? Is the source provided? Is a codebook or other meta-information available that makes it clear what the data is? 
+
+### Feedback and Comments
+The data is described pretty well overall, and it’s clear where everything comes from, which is a big plus. The sources (Project Tycho, CDC, and NCES) are clearly stated, and including download dates and parameters helps with transparency. I can understand what each dataset is generally being used for.
+
+### Summary assessment
+* source and overall structure of data well explained
+
+
+## Data wrangling and exploratory analysis
+How well is the data cleaned/processed and explored? Are all steps reasonable and well explained? Are alternatives discussed and considered? Are meaningful exploratory results shown (e.g. in the supplementary materials)?
+
+### Feedback and Comments
+The data cleaning and processing steps are overall well done and clearly explained. It’s easy to follow what was done, and most of the steps (like standardizing state names, converting variables to the correct formats, removing irrelevant locations, and aggregating data to the state-year level) are reasonable and appropriate for the analysis. The workflow also shows good attention to detail, especially with handling duplicates and reshaping the data, which makes the datasets more consistent and usable.
+
+### Summary assessment
+* essentially no weaknesses in wrangling and exploratory component
+
+## Appropriateness of Analysis
+Were the analysis methods appropriate for the data? Was the analysis done properly? Were different components of the analysis (e.g. performance measure, variable selection, data pre-processing, model evaluation) done in the best way possible and explained well?
+
+### Feedback and Comments
+The analysis methods overall seem appropriate for the type of data being used, and the workflow follows a logical and reasonable structure. The steps taken, such as cleaning and standardizing datasets, selecting relevant variables, and applying both statistical and machine learning approaches, make sense given the goals of the study. The analysis also appears to have
+
+### Summary assessment
+* strong and reasonable analysis
+
+## Presentation
+How well are results presented? Are tables and figures easy to read and understand? Are the main figures/tables publication level quality? 
+
+### Feedback and Comments
+I thought the figures were really well done overall: they were clean, easy to follow, and made the results much easier to understand. I especially liked Figures 6 and 8, where the labeled lines were added to the points. It showed a lot of attention to presentation. The table (labeled as Figure 11) also looked nice and clean, and it was organized in a way that made it easy to quickly interpret the results. Overall, the visuals were strong and clearly added value to the analysis. One important point I would like to bring up is that rendering manuscript.qmd did not render Figure 7 for me. 
+
+### Summary assessment
+* results are very well presented
+
+## Discussion/Conclusions
+Are the study findings properly discussed? Are strengths and limitations acknowledged? Are findings interpreted properly?
+
+### Feedback and Comments
+The study findings are discussed well overall, and the interpretation feels appropriate and grounded in the results. The discussion does a good job connecting the findings back to established knowledge, especially the relationship between vaccination coverage and measles incidence, and it clearly explains why even small drops in vaccination can have large effects. The interpretation is reasonable and doesn’t overreach, which is a strong point. it stays mostly within what the data can support.
+
+### Summary assessment
+* strong, complete and clear discussion
+
+# Overall project content evaluation
+Evaluate overall features of the project  by filling in the sections below.
+
+
+## Structure
+Is the project well structured? Are files in well labeled folders? Do files have reasonable names? Are all "junk" files not needed for analysis/reproduction removed? By just looking at files and folders, can you get an idea of how things fit together?
+
+### Feedback and Comments
+
+I found no problem with how the project was structured - I was able to find everything I needed intuitively.
+
+### Summary assessment
+* well structured
+
+
+## Documentation 
+How well is the project documented? Are you able to understand each step of the whole analysis, each decision that was made, and each line of code? Is enough information provided as comments in code or as part of Rmd files? 
+
+### Feedback and Comments
+
+The code is sufficiently documented with comments that made it easy for me to go through, run, and understand how/what the authors have done.
+
+### Summary assessment
+* fully and well documented
+
+
+
+## Reproducibility
+Are all results fully reproducible? Is documentation provided which clearly explains how to reproduce things, and does it work without the need for any manual intervention? Are you able to re-run the whole analysis without having to do manual interventions/edits?
+
+### Feedback and Comments
+
+While 99% might have been reproducible, my only issue was that I was unable to reproduce one of their figures. Upon investigating, it was simply the wrong file name as the filename is figures/totalcases_vs_edu_log_trans_biovar.png and the code lists figures/total_vs_edu_log_trans_biovar.png.
+
+### Summary assessment
+* small parts not reproducible or required manual intervention
+
+
+## Thoroughness
+How thorough was the overall study? Were alternatives (e.g. different ways of processing the data or different models) considered? Were alternatives discussed? Were the questions/hypotheses fully and thoroughly addressed?
+
+### Feedback and Comments
+Overall, the project appears to have been done very thoroughly, with clear effort put into the data collection, cleaning, analysis, and interpretation of results. Each step is well explained and logically connected, making it easy to follow the workflow from start to finish. The analysis feels complete and thoughtful, and the conclusions are well supported by the results. However, one thing I noticed is that there wasn’t much discussion of alternative approaches or methods.
+
+### Summary assessment
+* strong level of thorougness
+
+
+
+
+
