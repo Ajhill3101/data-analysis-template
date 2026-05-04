@@ -1,0 +1,149 @@
+---
+title: Project Review - MADA Measles Project
+author: Kexin (Cassie) Cui
+date: 05/01/2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    embed-resources: true
+---
+
+# Overview
+
+Title of project: Investigation of Measles Case Trends Post-Vaccination Efforts in the United States
+
+Name of project author(s): Austin Hill, Joe Dainis
+
+Name of project reviewer: Cassie Cui
+
+
+# Specific project content evaluation
+
+## Background, Context and Motivation
+
+### Feedback and Comments
+
+The introduction sets up the project nicely, walking through measles biology, MMR vaccine history, the herd-immunity threshold, and the post-COVID decline in coverage. Citations are used appropriately and I had a clear sense of why the question matters. One thing I'd suggest is stating the specific gap this project fills a bit more explicitly. I also wasn't sure where the "1,000 cases so far in 2026" number comes from, so a citation there would help.
+
+### Summary assessment
+* strong contextualization and motivation
+
+
+## Question description
+
+### Feedback and Comments
+
+The hypotheses are clear and map directly onto the variables built in the cleaning script. I agree with the previous reviewer that the "shorter-lived burdens" sentence is a little hard on a first read. It might also help to mention up front that the outcome being predicted is total measles cases from 2024–2026.
+
+### Summary assessment
+* question/hypotheses fully clear
+
+
+## Data description
+
+### Feedback and Comments
+
+Data sources are clearly identified, and I appreciated that the manuscript lists download dates and Project Tycho query parameters. What would push this from good to great is a short codebook for the engineered variables (`mmr_mean`, `frac_years_below_95`, `pct_years_any`, `hsgradratediff`, etc.) — right now I had to read the cleaning code to figure out what each one means. I also noticed that only `cdc-mmr2024.csv` is actually loaded, even though 2009–2023 versions are sitting in raw-data, and there's a stray `~$educationattainment.xlsx` lock file that should be removed.
+
+### Summary assessment
+* source and overall structure of data well explained
+
+
+## Data wrangling and exploratory analysis
+
+### Feedback and Comments
+
+The cleaning script is one of the strongest parts of the project. State names are standardized consistently across all four sources, the weekly Project Tycho data is aggregated cleanly to yearly state-level totals, and the engineered features feel like real operationalizations of the hypotheses. The exploratory plots are also thorough and informative.
+
+The one place I'd push back is the educational-attainment cleaning. Renaming columns positionally by `x1`, `x2`, `x3_2`, etc., and dropping rows by hard-coded indices is fragile — if the source file shifts even slightly, the labels would silently break. Filtering by state name would be safer. Also, the supplement is still essentially the template, which feels like a missed opportunity given how much exploratory material this project has.
+
+### Summary assessment
+* essentially no weaknesses in wrangling and exploratory component
+
+
+## Appropriateness of Analysis
+
+### Feedback and Comments
+
+The pipeline is reasonable — bivariate models with appropriate transformations, a multivariable model with a leave-one-out importance check that motivates the simpler two-predictor model, and a tidymodels random forest with CV and tuning. MAE is a defensible choice given the heavy-tailed outcome.
+
+My main concern is that the dataset is only 50 observations, so the random forest is almost certainly overfitting and the small MAE differences between models are probably within noise. A paragraph acknowledging the n=50 limitation would meaningfully strengthen the methods. Given the small n and the near-duplication between `mmr_mean` and `frac_years_below_95`, a regularized model (LASSO/elastic net) would also be a natural intermediate to try. One small thing: the Methods text says "Logistical regressions were applied", but the actual analyses are linear regression and random forest, so that should be corrected.
+
+### Summary assessment
+* defensible but not optimal analysis
+
+## Presentation
+
+### Feedback and Comments
+
+Most figures are clean and easy to read — the state-labeled scatter plots and the historical-vs-current scatter (Figure 8) are especially nice. I ran into two issues though. Figure 4's image path points to `focus_states_MMR_trends.png`, which is actually the Figure 3 image (the intended file is presumably `totalcases_vs_MMR_biovar.png`). Figure 7 also still has the path mismatch the previous reviewer flagged. Part of the underlying problem is that there are two figure folders with different naming conventions (spaces vs. underscores), which makes paths easy to break. Picking one canonical location and using `here()` consistently would help. Also small: "correlartion" should be "correlation".
+
+### Summary assessment
+* results are presented ok, with room for improvement
+
+
+## Discussion/Conclusions
+
+### Feedback and Comments
+
+The discussion gets the high-level story right and doesn't overreach, which I appreciated. Where I think it could go further is engaging with the specific quantitative findings — for instance, that the two-predictor model performs almost as well as the four-predictor model, and that the random forest only beats the linear model on the vaccination-only subset. The hypotheses about historical burden and education attainment also weren't really supported by the data, and I think the discussion should say so explicitly and speculate why. The limitations paragraph could also call out the small n, the leverage of Texas and South Carolina, and missing covariates like religious or political factors.
+
+### Summary assessment
+* minor parts wrong, missing or unclear
+
+
+## Further comments
+
+The `gtsave("RandomForestMeasles.png")` call in the modeling qmd writes to the current working directory rather than `products/manuscript/figures/`, so on a fresh run the manuscript may end up referencing the older committed copy. Since Texas and South Carolina drive most of the modeling variance, even a sentence acknowledging their leverage would help the reader interpret the results.
+
+
+
+# Overall project content evaluation
+
+
+## Structure
+
+### Feedback and Comments
+
+The top-level layout follows the MADA template and was easy to navigate. A few clean-up items would tighten things up: the `~$educationattainment.xlsx` lock file should be deleted and added to `.gitignore`, the unused 2009–2023 CDC MMR CSVs should either be removed or documented, and the duplicate render-artifact folders (`Measle data processingfile_files/` and `Measle-data-processingfile_files/`) suggest one is stale. Filenames in `results/figures/` use spaces while `products/manuscript/figures/` uses underscores, which is part of why some figure paths break. The `.Rproj` is also still named `data-analysis-template.Rproj`.
+
+### Summary assessment
+* mostly clear, but some confusing parts (e.g. useless files, things in the wrong folders)
+
+
+## Documentation
+
+### Feedback and Comments
+
+Inline code comments are good and I was able to follow the cleaning qmd end-to-end. The gaps are at the higher level: the top-level README is very short and doesn't tell a new user what to run first or what dependencies are needed, and the processing-code readme doesn't list the run order even though the modeling script depends on the RDS produced by the cleaning script. The modeling qmd also uses a relative path instead of `here()`, unlike the cleaning script. A short variable codebook would help too.
+
+### Summary assessment
+* decently documented with some gaps
+
+
+
+## Reproducibility
+
+### Feedback and Comments
+
+I could follow the workflow conceptually, but a few things would block a fresh-clone reproduction. The Figure 7 path mismatch flagged by the previous reviewer is still present, and Figure 4 currently points at the Figure 3 image. The modeling qmd uses a relative path instead of `here()`, and `gtsave()` writes the PNG to the working directory rather than the manuscript figures folder. There's also no `renv.lock` or `sessionInfo()` capture, so package versions aren't pinned.
+
+### Summary assessment
+* small parts not reproducible or required manual intervention
+
+
+## Thoroughness
+
+### Feedback and Comments
+
+The project covers a lot of ground — four data sources, four engineered predictors, a multivariable model with importance check, and an RF-vs-LM comparison across three feature subsets. What holds it back from "strong" is the breadth of alternatives considered: only two model families are tried (no regularized regression in between), no alternative outcome encodings or spatial structure are explored, and sensitivity to the Texas/South Carolina outliers isn't formally checked. The negative findings on historical burden and education also deserve more discussion than they currently get.
+
+### Summary assessment
+* decent level of thoroughness
+
+
+## Further comments
+
+Overall a solid project on a topic that genuinely matters, with a particularly strong introduction. The highest-impact revisions would be: fixing the figure path mismatches, cleaning up unused files and stale render folders, adding a short codebook and a top-level reproduction guide, correcting the "logistical regression" wording, and expanding the discussion to engage with what the model results actually showed. Nice work overall.
