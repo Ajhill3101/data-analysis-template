@@ -20,12 +20,13 @@ library(ranger)
 library(tidymodels)
 library(yardstick)
 library(gt)
+library(here)
 ```
 
 # Load the Cleaned Data
 ```{r}
 #Load the cleaned data
-measlesfeatures_clean <- readRDS("data/processed-data/measlesstatefeatures_data.rds")
+measlesfeatures_clean <- readRDS(here("data","processed-data","measlesstatefeatures_data.rds"))
 
 #Select Variables of Interest for Machine Learning
 ml_measles <- measlesfeatures_clean %>%
@@ -211,5 +212,5 @@ data_color(
     domain = NULL
   )
 ) %>%
-  gtsave("RandomForestMeasles.png")
+  gtsave(here::here("products","manuscript","figures","RandomForestMeasles.png"))
 ```

@@ -239,35 +239,82 @@ Logistical regressions were applied to explore whether certain predictor variabl
 
 Measles outbreaks are occurring across the United States, with several states reporting hundreds of cases. Since 2024, 5 states have reported having 100 or more cases, with 4 of these 5 states reporting more than 200 cases (Figure 1). These states include Arizona, Utah, South Carolina and Texas, with the latter two states having over 700+ cases respectively.
 
-![Figure 1: A Select Few States are Experiencing Major Measles Outbreaks Since 2024](figures/top_states_measles.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 1: A Select Few States are Experiencing Major Measles Outbreaks Since 2024"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "top_states_measles.png"))
+```
+
 
 To confirm whether the data used in this study reflects nationally reported trends in declining MMR vaccination rates, we first sought to test the national MMR vaccination trends in the dataset. Indeed, we see a declining rate in MMR vaccination rate in kindergartners, staggering at a 94% median vaccination rate until 2020, where we see a declining trend in MMR vaccination rate (Figure 2). 
 
-![Figure 2: National MMR Vaccination Data Reveal Declining Trend in Median Vaccination Rate in Kindergartners](figures/national_MMR_trends.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 2: National MMR Vaccination Data Reveal Declining Trend in Median Vaccination Rate in Kindergartners"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "national_MMR_trends.png"))
+```
 
 We next wanted to test whether current measles outbreaks could be correlated to recent MMR vaccination trends. In a certain subset of states, exemplified by New York and California, MMR vaccination rates either slightly increased since 2012 or hovered at or above the 95% target rate for measles herd immunity (Figure 3). The other trend seen, exemplified by Arizona, South Carolina, Texas, and Utah, is a steady decline, with many of the states in this starting above the 95% herd immunity rate and dropping below by 2024. 
 
-![Figure 3: Two Distinct Trends in MMR Vaccination Rate in Kindergarteners since 2012](figures/focus_states_MMR_trends.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 3: Two Distinct Trends in MMR Vaccination Rate in Kindergarteners since 2012"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "focus_states_MMR_trends.png"))
+```
+
 
 After noting potential trends in the data between measles burden and MMR vaccination rates, we looked to develop a model which explored this correlartion. A bivariate model using mean MMR vaccination coverage as a predictor of total measles cases showed a slight negative correlation, with higher MMR coverage having a lesser measles burden.
 
-![Figure 4: Bivariate Modeling Shows Mean MMR Coverage as a Weak Predictor of Measles Burden](figures/focus_states_MMR_trends.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 4: Bivariate Modeling Shows Mean MMR Coverage as a Weak Predictor of Measles Burden"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "totalcases_vs_MMR_biovar.png"))
+```
+
 
 Being a highly contagious pathogen, measles presents itself as a disease that would likely have many factors that could influence total burden in U.S. communities. As a result, we sought additional variables that could be used as additional predictors of total measles case burdens. Many of these additional factors rely on variables inherent to the virus, including its pathogenicity, mutagenesis capability and virulence. For this study, we focused on societal variables inherent to the human hosts of this virus. First, we focused on educational attainment to better understand whether differences in highest achieved education level could influence measles burden, as these rates vary from state-to-state. The dataset used for education attainment, obtained from the National Center for Education Statistics, contained data from both 2012 to 2022, allowing us to do comparisons to not only attainment in those years but also with changes over time. Plotting differences in high school graduation over time reveals that a large majority of states are having higher graduation rates in 2022, whereas only a few states showed lower graduation rates compared to 2012, with Wyoming and Hawaii seeing the most negative change (Figure 5).
 
-![Figure 5: High School Graduation Trends Over Time](figures/grad_rate_trends.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 5: High School Graduation Trends Over Time"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "grad_rate_trends.png"))
+```
+
 
 Next, we investigated if there were any correlations between the high school graduation rate change variable and two predicted variables: total measles cases and MMR vaccine rate. There appeared to be a weakly positive association between the change in high school graduation rate and mean MMR vaccination rate (Figure 6).
 
-![Figure 6: High School Graduation Trends Over Time Weakly Associate with Mean MMR Vaccination Rates](figures/vacc_posneghsgrad.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 6: High School Graduation Trends Over Time Weakly Associate with Mean MMR Vaccination Rates"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "vacc_posneghsgrad.png"))
+```
+
 
 A bivariate analysis between these changing graduation rates over time revealed no association between this variable and measles outbreaks. (This variable was log transformed to reduce the impact of the strong Texas and South Carolina outliers.)
 
-![Figure 7: A Bivariate Analysis with High School Graduation Trends Over Time Shows No Predictive Power of Total Measles Burden](figures/total_vs_edu_log_trans_biovar.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 7: A Bivariate Analysis with High School Graduation Trends Over Time Shows No Predictive Power of Total Measles Burden"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "totalcases_vs_edu_log_trans_biovar.png"))
+```
+
 
 The final variable we sought to incorporate into this analysis is historical measles burden. We hypothesized that lingering measles cases over time might account for differences in behaviors in the community, which could account for current differences U.S. states currently experiencing measles outbreaks. We first investigated whether any correlation existed between total measles burden currently seen between 2024-2026 and the maximum number of cases yearly from 1980-2009. This revealed a positive correlation, with states having higher measles burden in the past having higher current measles burdens (Figure 8). However, it did not appear as though the states having the highest burdens followed this trend perfectly, with South Carolina, Utah and Arizona having higher burdens currently but a lesser historical burden.
 
-![Figure 8: Historical Measles Burden as a Predictor of Current Measles Burden](figures/peak_measles_historical_peak.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 8: Historical Measles Burden as a Predictor of Current Measles Burden"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "peak_measles_historical_peak.png"))
+```
+
 
 Running a simple bivariate analysis using a percent of years with a positive historical measles burden shows a very weak association, indicating that this historical measles burden might not be a good predictor of current measles burden.
 
@@ -279,12 +326,24 @@ The multivariable analysis started by creating a dataset that included the outco
 
 The MAE summary table for the full model shows that the training, cross-validation, and test errors are fairly similar, which suggests the model is not overfitting and performs consistently across datasets.  
 
-![Figure 9: Determining the best predictors](figures/Predictor_Importance.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 9: Determining the best predictors"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "Predictor_Importance.png"))
+```
+
 Figure 9: The predictor importance table shows that removing vaccination-related predictors increases the error more than removing the other variables, indicating that MMR coverage and the frequency of vaccination rates below 95% are the most important predictors. The table for this graph can be found in results/tables/which_of_the_4_predictors_performs_best.csv
 
 The simpler two-predictor model produces MAE values close to the full model, showing that vaccination variables alone explain much of the variation in measles cases. The table for this can be found in results/tables/Two-Predictor_Model_Summary.csv
 
-![Figure 10: Two-Predictor model](figures/Two-Predictor_Model.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 10: Two-Predictor model"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "Two-Predictor_Model.png"))
+```
+
 Figure 10: The predicted vs. actual plot shows a general upward trend, meaning states with higher predicted values also tend to have higher observed measles cases, although the points are somewhat spread out, indicating moderate prediction error. Overall, these results suggest that vaccination coverage is the strongest factor in predicting measles case counts. 
 
 
@@ -292,7 +351,13 @@ Figure 10: The predicted vs. actual plot shows a general upward trend, meaning s
 
 Next, we sought to use machine learning and modeling to test whether any of the aforementioned variables could be used to predict our main outcome of interest, which is total case burdens from 2024 to 2026. The random forest model was chosen for this modeling due to its ability to handle extreme outliers, which we see in certain states in our datasets, and reduce overfitting. It was then compared to a linear regression model. To test the metrics of the Random Forest model, we used the Mean Absolute Error, or MAE, as this metric is commonly used for datasets with extreme outliers. 
 
-![Figure 11: Model Comparison between Random Forest and Linear Regression Models](figures/RandomForestMeasles.png)
+```{r}
+#| echo: false
+#| fig-cap: "Figure 11: Model Comparison between Random Forest and Linear Regression Models"
+
+knitr::include_graphics(here::here("products","manuscript","figures", "RandomForestMeasles.png"))
+```
+
 
 The comparison table in Figure 11 highlights how the four variables performed in predicting current measles cases in 2024-2026. Using all 4 predictor variables best predicted case measles using a linear regression model as compared to the random forest model, as indicated by the smaller Mean Absolute Error. This was also the case when only the "Historical Burdens" and "High School Graduation Rates" variables were used as predictors, with a slight improvement in MAE. However, when using the "MMR vaccination means" and "Fraction of Years Below 95% Vaccination" variables, the opposite was true: we see a smaller MAE when using the Random Forest Model as compared to the linear regression model. This indicates the both linear and non-linear variables are impacting the model's ability to predict current case burdens in the U.S. In addition, the Mean Absolute Error is quite high, with the MAE hovering at ~95 cases, indicating that the model is predicting the true burden for these states within a threshold of +/- 95 cases. This is semi-decent for states with high burdens, such as Texas and South Carolina, but for other states with low case burdens this model is not suitable for predictions. This additionally indicates that there are likely other variables that explain the outbreaks currently happening in communities across the United States.
 
